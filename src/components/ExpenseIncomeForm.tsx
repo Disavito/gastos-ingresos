@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { DollarSign, TrendingUp, TrendingDown, Calendar, Tag, User, Wallet, FileText, ChevronDown, CheckCircle, Edit, Copy, Loader2, AlertTriangle, FilePlus } from 'lucide-react';
-import { EXPENSE_CATEGORIES, FIXED_EXPENSE_OPTIONS, VIATICOS_OPTIONS, TRANSACTION_TYPES } from '../constants'; // ACCOUNTS se eliminará de aquí
+import { EXPENSE_CATEGORIES, FIXED_EXPENSE_OPTIONS, VIATICOS_OPTIONS, TRANSACTION_TYPES } from '../constants';
 import { supabase } from '../supabaseClient';
 
 // Define la interfaz para los datos de un ingreso tal como vienen de Supabase
@@ -35,7 +35,7 @@ interface FormData {
   date: string;
 
   // Expense-specific fields (optional for income)
-  id?: string; // Auto-generated for expense
+  numeroGasto?: string; // New: To store the GA001 format
   category?: string;
   subCategory?: string;
   person?: string; // Ahora será el 'name' del colaborador
@@ -52,6 +52,7 @@ interface FormData {
 const ExpenseIncomeForm: React.FC = () => {
   const [expenseCounter, setExpenseCounter] = useState(1);
   const [incomeCounter, setIncomeCounter] = useState(1);
+  const [isExpenseCounterLoading, setIsExpenseCounterLoading] = useState(true); // NEW: Estado de carga para el contador de gastos
   const [peopleList, setPeopleList] = useState<Person[]>([]); // Nuevo estado para la lista de colaboradores
   const [isPeopleLoading, setIsPeopleLoading] = useState(true); // Estado de carga para colaboradores
   const [peopleError, setPeopleError] = useState<string | null>(null); // Estado de error para colaboradores
@@ -61,14 +62,14 @@ const ExpenseIncomeForm: React.FC = () => {
   const [accountsError, setAccountsError] = useState<string | null>(null); // Estado de error para cuentas
 
   const formatId = (count: number, type: 'expense' | 'income') => {
-    const prefix = type === 'expense' ? 'GA' : 'IG';
+    const prefix = type === 'expense' ? 'GA' : 'IG'; // IG is not used for income, but kept for consistency
     const paddedCount = String(count).padStart(3, '0');
     return `${prefix}${paddedCount}`;
   };
 
   const [formData, setFormData] = useState<FormData>(() => ({
     type: 'expense',
-    id: formatId(1, 'expense'),
+    numeroGasto: formatId(1, 'expense'), // Initialize with GA001 format (will be updated by useEffect)
     category: '',
     subCategory: '',
     description: '',
@@ -92,6 +93,43 @@ const ExpenseIncomeForm: React.FC = () => {
   const [existingIncomeForEdit, setExistingIncomeForEdit] = useState<IncomeData | null>(null);
   const [isEditingExistingIncome, setIsEditingExistingIncome] = useState(false);
 
+  // NEW: Efecto para cargar el último numero_gasto de la base de datos
+  useEffect(() => {
+    const fetchLastExpenseId = async () => {
+      setIsExpenseCounterLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from('gastos')
+          .select('numero_gasto')
+          .order('created_at', { ascending: false }) // Obtener el más reciente
+          .limit(1)
+          .single();
+
+        if (error && error.code !== 'PGRST116') { // PGRST116 significa que no se encontraron filas
+          throw error;
+        }
+
+        if (data && data.numero_gasto) {
+          const lastNumber = parseInt(data.numero_gasto.replace('GA', ''), 10);
+          if (!isNaN(lastNumber)) {
+            setExpenseCounter(lastNumber + 1);
+          } else {
+            console.warn('No se pudo parsear el último número de gasto de la base de datos:', data.numero_gasto);
+            setExpenseCounter(1); // Fallback si el parseo falla
+          }
+        } else {
+          setExpenseCounter(1); // No hay gastos existentes, empezar desde 1
+        }
+      } catch (error: any) {
+        console.error('Error al obtener el último ID de gasto de Supabase:', error.message);
+        setExpenseCounter(1); // Fallback en caso de error
+      } finally {
+        setIsExpenseCounterLoading(false);
+      }
+    };
+
+    fetchLastExpenseId();
+  }, []); // Se ejecuta solo una vez al montar el componente
 
   // Efecto para cargar la lista de colaboradores al montar el componente
   useEffect(() => {
@@ -150,7 +188,7 @@ const ExpenseIncomeForm: React.FC = () => {
     if (formData.type === 'expense') {
       setFormData(prev => ({
         ...prev,
-        id: formatId(expenseCounter, 'expense'),
+        numeroGasto: formatId(expenseCounter, 'expense'), // Update numeroGasto
       }));
     }
   }, [formData.type, expenseCounter]);
@@ -188,7 +226,7 @@ const ExpenseIncomeForm: React.FC = () => {
       if (type === 'expense') {
         return {
           ...commonFields,
-          id: formatId(expenseCounter, 'expense'),
+          numeroGasto: formatId(expenseCounter, 'expense'), // Initialize numeroGasto
           category: '',
           subCategory: '',
           description: '',
@@ -202,7 +240,7 @@ const ExpenseIncomeForm: React.FC = () => {
       } else { // type === 'income'
         return {
           ...commonFields,
-          id: undefined,
+          numeroGasto: undefined, // Clear numeroGasto for income
           category: undefined,
           subCategory: undefined,
           description: undefined,
@@ -240,7 +278,7 @@ const ExpenseIncomeForm: React.FC = () => {
     try {
       const { data, error } = await supabase
         .from('socio_titulares')
-        .select('nombres, apellidoPaterno, apellidoMaterno') // ACTUALIZADO: Usando camelCase
+        .select('nombres, apellidoPaterno, apellidoMaterno')
         .eq('dni', dni)
         .single();
 
@@ -249,7 +287,6 @@ const ExpenseIncomeForm: React.FC = () => {
       }
 
       if (data) {
-        // ACTUALIZADO: Accediendo a las propiedades con camelCase
         const fullName = `${data.nombres} ${data.apellidoPaterno} ${data.apellidoMaterno}`;
         setFormData(prev => ({ ...prev, fullName }));
         setDniError(null); // DNI found, no error
@@ -321,6 +358,7 @@ const ExpenseIncomeForm: React.FC = () => {
         date: existingIncomeForEdit.date,
         transactionType: existingIncomeForEdit.transaction_type,
         incomeId: existingIncomeForEdit.id, // Store the ID for update
+        numeroGasto: undefined, // Ensure numeroGasto is cleared for income
       });
       setIsEditingExistingIncome(true);
       setReceiptNumberError(null); // Clear error message
@@ -386,7 +424,8 @@ const ExpenseIncomeForm: React.FC = () => {
     try {
       if (formData.type === 'expense') {
         const expensePayload = {
-          id: formData.id,
+          // 'id' (UUID) will be generated by Supabase automatically
+          numero_gasto: formData.numeroGasto, // Use the GA001 format here
           amount: formData.amount,
           account: formData.account,
           date: formData.date,
@@ -398,8 +437,9 @@ const ExpenseIncomeForm: React.FC = () => {
         console.log('DEBUG: Attempting to insert expense with payload:', expensePayload);
 
         const { data, error } = await supabase
-          .from('gastos') // <-- CORREGIDO: Cambiado de 'expenses' a 'gastos'
-          .insert([expensePayload]);
+          .from('gastos')
+          .insert([expensePayload])
+          .select(); // Use .select() to get the generated UUID and other fields
 
         if (error) {
           console.error('Supabase error inserting expense:', error);
@@ -412,7 +452,7 @@ const ExpenseIncomeForm: React.FC = () => {
         setExpenseCounter(newExpenseCounter);
         setFormData({
           type: 'expense',
-          id: formatId(newExpenseCounter, 'expense'),
+          numeroGasto: formatId(newExpenseCounter, 'expense'), // Update numeroGasto for next entry
           category: '',
           subCategory: '',
           description: '',
@@ -528,7 +568,7 @@ const ExpenseIncomeForm: React.FC = () => {
         setIncomeCounter(newIncomeCounter);
         setFormData({
           type: 'income',
-          id: undefined,
+          numeroGasto: undefined, // Clear numeroGasto for income
           receiptNumber: '',
           fullName: '',
           dni: '',
@@ -795,17 +835,21 @@ const ExpenseIncomeForm: React.FC = () => {
               </button>
             </div>
 
-            {formData.type === 'expense' && formData.id && (
+            {formData.type === 'expense' && (
               <div className="flex items-center gap-2 mb-6 justify-start">
-                <span className="text-xl font-bold text-accent font-mono">{formData.id}</span>
-                <button
-                  type="button"
-                  onClick={() => navigator.clipboard.writeText(formData.id || '')}
-                  className="p-1 rounded-md hover:bg-border transition-colors duration-200"
-                  title="Copiar ID"
-                >
-                  <Copy size={20} className="text-textSecondary" />
-                </button>
+                <span className="text-xl font-bold text-accent font-mono">
+                  {isExpenseCounterLoading ? 'Cargando ID...' : formData.numeroGasto} {/* Mostrar estado de carga */}
+                </span>
+                {!isExpenseCounterLoading && formData.numeroGasto && ( // Solo mostrar botón de copiar si no está cargando y hay un ID
+                  <button
+                    type="button"
+                    onClick={() => navigator.clipboard.writeText(formData.numeroGasto || '')}
+                    className="p-1 rounded-md hover:bg-border transition-colors duration-200"
+                    title="Copiar ID"
+                  >
+                    <Copy size={20} className="text-textSecondary" />
+                  </button>
+                )}
               </div>
             )}
 
@@ -1003,11 +1047,13 @@ const ExpenseIncomeForm: React.FC = () => {
               )}
 
               <div className="md:col-span-2 mt-6">
+                {/* Deshabilitar si se está enviando o si el contador de gastos está cargando */}
                 <button
                   type="submit"
-                  className="w-full bg-primary text-white py-3 rounded-xl text-lg font-semibold hover:bg-primary/90 transition-all duration-300 ease-in-out shadow-lg shadow-primary/40 transform hover:-translate-y-1"
+                  className="w-full bg-primary text-white py-3 rounded-xl text-lg font-semibold hover:bg-primary/90 transition-all duration-300 ease-in-out shadow-lg shadow-primary/40 transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={isSubmitting || (formData.type === 'expense' && isExpenseCounterLoading)}
                 >
-                  {isEditingExistingIncome ? 'Actualizar Recibo' : (formData.type === 'expense' ? 'Registrar Gasto' : 'Registrar Ingreso')}
+                  {isSubmitting ? 'Procesando...' : (formData.type === 'expense' ? (isExpenseCounterLoading ? 'Cargando ID...' : 'Registrar Gasto') : (isEditingExistingIncome ? 'Actualizar Recibo' : 'Registrar Ingreso'))}
                 </button>
               </div>
             </form>
@@ -1024,7 +1070,7 @@ const ExpenseIncomeForm: React.FC = () => {
 
                 {formData.type === 'expense' ? (
                   <>
-                    <p><strong className="text-textSecondary">ID:</strong> <span className="text-lg text-accent break-all">{formData.id}</span></p>
+                    <p><strong className="text-textSecondary">ID Gasto:</strong> <span className="text-lg text-accent break-all">{formData.numeroGasto}</span></p>
                     <p><strong className="text-textSecondary">Monto:</strong> <span className="text-primary font-bold">${formData.amount}</span></p>
                     <p><strong className="text-textSecondary">Cuenta:</strong> {formData.account}</p> {/* Muestra el nombre de la cuenta directamente */}
                     <p><strong className="text-textSecondary">Categoría:</strong> {getCategoryLabel(formData.category, EXPENSE_CATEGORIES)}</p>
