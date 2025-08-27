@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [
     react({
-      jsxRuntime: 'automatic' // CRÍTICO: Hace explícito el JSX Runtime automático para Vite
+      jsxRuntime: 'automatic'
     })
   ],
   optimizeDeps: {

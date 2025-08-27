@@ -12,7 +12,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx", // CRÍTICO: Asegura el JSX Runtime automático
+    "jsx": "react-jsx",
 
     /* Linting */
     "strict": true,
