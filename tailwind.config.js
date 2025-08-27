@@ -2,21 +2,26 @@
 export default {
   content: [
     "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
+    "./src/**/*.{js,ts,jsx-tsx}",
   ],
   theme: {
     extend: {
       colors: {
-        background: '#FFFFFF', // White background
-        surface: '#F9FAFB',   // Light grey for card surfaces
-        text: '#1F2937',      // Dark text for readability
-        textSecondary: '#6B7280', // Secondary text
-        border: '#E5E7EB',    // Light border
-        primary: '#3B82F6',   // Vibrant Blue (for main actions/focus)
-        accent: '#22C55E',    // Vibrant Green (for highlights/income)
-        success: '#22C55E',   // Green for success (same as accent)
-        error: '#EF4444',     // Red for errors/expenses
-        warning: '#F59E0B',   // Orange for warnings
+        // User's provided palette
+        primary: '#9E7FFF', // Light purple
+        secondary: '#38bdf8', // Light blue
+        accent: '#f472b6', // Pink
+        background: '#171717', // Very dark grey (overall page background, though we'll use a gradient)
+        surface: '#262626', // Dark grey (form card background)
+        text: '#FFFFFF', // White (main text on dark surfaces)
+        textSecondary: '#A3A3A3', // Light grey (secondary text, labels)
+        border: '#2F2F2F', // Darker grey (borders)
+        success: '#10b981', // Green
+        warning: '#f59e0b', // Orange
+        error: '#ef4444', // Red
+
+        // New color for dark text on white inputs for better contrast
+        'input-text-dark': '#1F2937', // Dark text for white input fields
       },
       borderRadius: {
         'xl': '16px', // Custom rounded corners

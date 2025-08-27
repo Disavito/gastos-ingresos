@@ -612,7 +612,7 @@ const ExpenseIncomeForm: React.FC = () => {
               name="category"
               value={formData.category || ''}
               onChange={handleChange}
-              className="w-full p-3 pr-10 bg-white border border-border rounded-xl text-text focus:ring-primary focus:border-primary appearance-none transition-all duration-200 ease-in-out"
+              className="w-full p-3 pr-10 bg-white border border-border rounded-xl text-input-text-dark focus:ring-primary focus:border-primary appearance-none transition-all duration-200 ease-in-out"
               required
             >
               <option value="" disabled>Selecciona una categoría</option>
@@ -633,7 +633,7 @@ const ExpenseIncomeForm: React.FC = () => {
                 name="subCategory"
                 value={formData.subCategory || ''}
                 onChange={handleChange}
-                className="w-full p-3 pr-10 bg-white border border-border rounded-xl text-text focus:ring-primary focus:border-primary appearance-none transition-all duration-200 ease-in-out"
+                className="w-full p-3 pr-10 bg-white border border-border rounded-xl text-input-text-dark focus:ring-primary focus:border-primary appearance-none transition-all duration-200 ease-in-out"
                 required
               >
                 <option value="" disabled>Selecciona un tipo</option>
@@ -655,7 +655,7 @@ const ExpenseIncomeForm: React.FC = () => {
                 name="subCategory"
                 value={formData.subCategory || ''}
                 onChange={handleChange}
-                className="w-full p-3 pr-10 bg-white border border-border rounded-xl text-text focus:ring-primary focus:border-primary appearance-none transition-all duration-200 ease-in-out"
+                className="w-full p-3 pr-10 bg-white border border-border rounded-xl text-input-text-dark focus:ring-primary focus:border-primary appearance-none transition-all duration-200 ease-in-out"
                 required
               >
                 <option value="" disabled>Selecciona un tipo</option>
@@ -686,7 +686,7 @@ const ExpenseIncomeForm: React.FC = () => {
               value={formData.receiptNumber || ''}
               onChange={handleChange}
               onBlur={handleReceiptNumberLookup} // Trigger lookup on blur
-              className={`w-full pl-10 p-3 bg-white border border-border rounded-xl text-text focus:ring-primary focus:border-primary transition-all duration-200 ease-in-out ${
+              className={`w-full pl-10 p-3 bg-white border border-border rounded-xl text-input-text-dark focus:ring-primary focus:border-primary transition-all duration-200 ease-in-out ${
                 isEditingExistingIncome ? 'bg-gray-100 cursor-not-allowed' : ''
               }`}
               placeholder="Ej. REC00123"
@@ -754,7 +754,7 @@ const ExpenseIncomeForm: React.FC = () => {
               value={formData.dni || ''}
               onChange={handleChange}
               onBlur={handleDniLookup}
-              className="w-full pl-10 p-3 bg-white border border-border rounded-xl text-text focus:ring-primary focus:border-primary transition-all duration-200 ease-in-out"
+              className="w-full pl-10 p-3 bg-white border border-border rounded-xl text-input-text-dark focus:ring-primary focus:border-primary transition-all duration-200 ease-in-out"
               placeholder="Ej. 12345678"
               maxLength={8}
               required
@@ -778,7 +778,7 @@ const ExpenseIncomeForm: React.FC = () => {
               value={formData.fullName || ''}
               onChange={handleChange}
               readOnly={!!formData.dni && !dniError && !isDniLoading && formData.fullName !== ''}
-              className={`w-full pl-10 p-3 bg-white border border-border rounded-xl text-text focus:ring-primary focus:border-primary transition-all duration-200 ease-in-out ${
+              className={`w-full pl-10 p-3 bg-white border border-border rounded-xl text-input-text-dark focus:ring-primary focus:border-primary transition-all duration-200 ease-in-out ${
                 (!!formData.dni && !dniError && !isDniLoading && formData.fullName !== '') ? 'bg-gray-100 cursor-not-allowed' : ''
               }`}
               placeholder="Nombre Apellido"
@@ -791,14 +791,17 @@ const ExpenseIncomeForm: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background font-sans text-text flex items-center justify-center p-4 sm:p-6 lg:p-8">
-      <div className="bg-surface rounded-xl shadow-2xl p-6 sm:p-8 lg:p-10 w-full max-w-2xl border border-border animate-fade-in">
-        <div className="flex justify-center mb-8">
-          <DollarSign className="text-primary" size={48} />
+    <div className="min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-gradient-to-br from-primary to-secondary">
+      <div className="w-full max-w-4xl rounded-xl shadow-2xl overflow-hidden border border-border bg-surface p-6 sm:p-8 lg:p-10 animate-fade-in">
+        {/* Título y Subtítulo */}
+        <div className="text-left mb-8">
+          <h2 className="text-base sm:text-lg font-bold text-textSecondary leading-tight"> {/* COORPORACION FIMAGADI más pequeño */}
+            COORPORACION FIMAGADI
+          </h2>
+          <p className="text-xl sm:text-2xl font-bold text-primary mt-1"> {/* REGISTRO DE MOVIMIENTOS más grande */}
+            REGISTRO DE MOVIMIENTOS
+          </p>
         </div>
-        <h2 className="text-3xl sm:text-4xl font-bold text-center text-primary mb-2 leading-tight">
-          Registro de <span className="text-accent">Movimientos</span>
-        </h2>
 
         {submitMessage && (
           <div className={`p-4 mb-6 rounded-xl text-center font-semibold ${
@@ -816,8 +819,8 @@ const ExpenseIncomeForm: React.FC = () => {
                 onClick={() => handleTypeChange('expense')}
                 className={`flex items-center gap-2 px-6 py-3 rounded-full text-lg font-semibold transition-all duration-300 ease-in-out
                   ${formData.type === 'expense'
-                    ? 'bg-error text-white shadow-lg shadow-error/30 transform scale-105'
-                    : 'bg-surface text-textSecondary hover:bg-border hover:text-text'
+                    ? 'bg-error text-white shadow-lg shadow-error/30 transform scale-105' /* Cambiado a bg-error (rojo) */
+                    : 'bg-border text-input-text-dark hover:bg-border/70 hover:text-input-text-dark' /* Fondo con contraste, texto oscuro por defecto y en hover */
                   }`}
               >
                 <TrendingDown size={20} /> Gasto
@@ -828,7 +831,7 @@ const ExpenseIncomeForm: React.FC = () => {
                 className={`flex items-center gap-2 px-6 py-3 rounded-full text-lg font-semibold transition-all duration-300 ease-in-out
                   ${formData.type === 'income'
                     ? 'bg-success text-white shadow-lg shadow-success/30 transform scale-105'
-                    : 'bg-surface text-textSecondary hover:bg-border hover:text-text'
+                    : 'bg-border text-input-text-dark hover:bg-border/70 hover:text-input-text-dark' /* Fondo con contraste, texto oscuro por defecto y en hover */
                   }`}
               >
                 <TrendingUp size={20} /> Ingreso
@@ -866,7 +869,7 @@ const ExpenseIncomeForm: React.FC = () => {
                         name="amount"
                         value={formData.amount}
                         onChange={handleChange}
-                        className="w-full pl-10 p-3 bg-white border border-border rounded-xl text-text focus:ring-primary focus:border-primary transition-all duration-200 ease-in-out"
+                        className="w-full pl-10 p-3 bg-white border border-border rounded-xl text-input-text-dark focus:ring-primary focus:border-primary transition-all duration-200 ease-in-out"
                         placeholder="0.00"
                         step="0.01"
                         required
@@ -883,7 +886,7 @@ const ExpenseIncomeForm: React.FC = () => {
                         name="account"
                         value={formData.account}
                         onChange={handleChange}
-                        className="w-full pl-10 p-3 pr-10 bg-white border border-border rounded-xl text-text focus:ring-primary focus:border-primary appearance-none transition-all duration-200 ease-in-out"
+                        className="w-full pl-10 p-3 pr-10 bg-white border border-border rounded-xl text-input-text-dark focus:ring-primary focus:border-primary appearance-none transition-all duration-200 ease-in-out"
                         required
                         disabled={isAccountsLoading}
                       >
@@ -911,7 +914,7 @@ const ExpenseIncomeForm: React.FC = () => {
                         name="date"
                         value={formData.date}
                         onChange={handleChange}
-                        className="w-full pl-10 p-3 bg-white border border-border rounded-xl text-text focus:ring-primary focus:border-primary transition-all duration-200 ease-in-out"
+                        className="w-full pl-10 p-3 bg-white border border-border rounded-xl text-input-text-dark focus:ring-primary focus:border-primary transition-all duration-200 ease-in-out"
                         required
                       />
                     </div>
@@ -926,7 +929,7 @@ const ExpenseIncomeForm: React.FC = () => {
                         name="person"
                         value={formData.person || ''}
                         onChange={handleChange}
-                        className="w-full pl-10 p-3 pr-10 bg-white border border-border rounded-xl text-text focus:ring-primary focus:border-primary appearance-none transition-all duration-200 ease-in-out"
+                        className="w-full pl-10 p-3 pr-10 bg-white border border-border rounded-xl text-input-text-dark focus:ring-primary focus:border-primary appearance-none transition-all duration-200 ease-in-out"
                         required
                         disabled={isPeopleLoading} // Deshabilitar mientras carga
                       >
@@ -952,7 +955,7 @@ const ExpenseIncomeForm: React.FC = () => {
                         value={formData.description || ''}
                         onChange={handleChange}
                         rows={3}
-                        className="w-full pl-10 p-3 bg-white border border-border rounded-xl text-text focus:ring-primary focus:border-primary resize-y transition-all duration-200 ease-in-out"
+                        className="w-full pl-10 p-3 bg-white border border-border rounded-xl text-input-text-dark focus:ring-primary focus:border-primary resize-y transition-all duration-200 ease-in-out"
                         placeholder="Detalles del movimiento..."
                         required
                       ></textarea>
@@ -975,7 +978,7 @@ const ExpenseIncomeForm: React.FC = () => {
                         name="date"
                         value={formData.date}
                         onChange={handleChange}
-                        className="w-full pl-10 p-3 bg-white border border-border rounded-xl text-text focus:ring-primary focus:border-primary transition-all duration-200 ease-in-out"
+                        className="w-full pl-10 p-3 bg-white border border-border rounded-xl text-input-text-dark focus:ring-primary focus:border-primary transition-all duration-200 ease-in-out"
                         required
                       />
                     </div>
@@ -991,7 +994,7 @@ const ExpenseIncomeForm: React.FC = () => {
                         name="amount"
                         value={formData.amount}
                         onChange={handleChange}
-                        className="w-full pl-10 p-3 bg-white border border-border rounded-xl text-text focus:ring-primary focus:border-primary transition-all duration-200 ease-in-out"
+                        className="w-full pl-10 p-3 bg-white border border-border rounded-xl text-input-text-dark focus:ring-primary focus:border-primary transition-all duration-200 ease-in-out"
                         placeholder="0.00"
                         step="0.01"
                         required
@@ -1008,7 +1011,7 @@ const ExpenseIncomeForm: React.FC = () => {
                         name="account"
                         value={formData.account}
                         onChange={handleChange}
-                        className="w-full pl-10 p-3 pr-10 bg-white border border-border rounded-xl text-text focus:ring-primary focus:border-primary appearance-none transition-all duration-200 ease-in-out"
+                        className="w-full pl-10 p-3 pr-10 bg-white border border-border rounded-xl text-input-text-dark focus:ring-primary focus:border-primary appearance-none transition-all duration-200 ease-in-out"
                         required
                         disabled={isAccountsLoading}
                       >
@@ -1032,7 +1035,7 @@ const ExpenseIncomeForm: React.FC = () => {
                         name="transactionType"
                         value={formData.transactionType || ''}
                         onChange={handleChange}
-                        className="w-full p-3 pr-10 bg-white border border-border rounded-xl text-text focus:ring-primary focus:border-primary appearance-none transition-all duration-200 ease-in-out"
+                        className="w-full p-3 pr-10 bg-white border border-border rounded-xl text-input-text-dark focus:ring-primary focus:border-primary appearance-none transition-all duration-200 ease-in-out"
                         required
                       >
                         <option value="" disabled>Selecciona un tipo</option>
@@ -1050,7 +1053,7 @@ const ExpenseIncomeForm: React.FC = () => {
                 {/* Deshabilitar si se está enviando o si el contador de gastos está cargando */}
                 <button
                   type="submit"
-                  className="w-full bg-primary text-white py-3 rounded-xl text-lg font-semibold hover:bg-primary/90 transition-all duration-300 ease-in-out shadow-lg shadow-primary/40 transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-success text-white py-3 rounded-xl text-lg font-semibold hover:bg-success/90 transition-all duration-300 ease-in-out shadow-lg shadow-success/40 transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed"
                   disabled={isSubmitting || (formData.type === 'expense' && isExpenseCounterLoading)}
                 >
                   {isSubmitting ? 'Procesando...' : (formData.type === 'expense' ? (isExpenseCounterLoading ? 'Cargando ID...' : 'Registrar Gasto') : (isEditingExistingIncome ? 'Actualizar Recibo' : 'Registrar Ingreso'))}
