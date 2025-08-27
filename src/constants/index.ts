@@ -1,35 +1,24 @@
 export const EXPENSE_CATEGORIES = [
   { value: 'fixed', label: 'Gasto Fijo' },
   { value: 'viaticos', label: 'Viáticos' },
-  { value: 'otros', label: 'Otros' },
+  { value: 'other', label: 'Otros Gastos' },
 ];
 
 export const FIXED_EXPENSE_OPTIONS = [
-  { value: 'internet', label: 'Internet' },
-  { value: 'servidor', label: 'Servidor' },
-  { value: 'alquiler', label: 'Alquiler' },
-  { value: 'agua_mantenimiento', label: 'Agua/Mantenimiento' },
-  { value: 'luz', label: 'Luz' },
-  { value: 'sueldo', label: 'Sueldo' },
-  { value: 'gasolina', label: 'Gasolina' },
-  { value: 'impuestos', label: 'Impuestos' },
-  { value: 'seguro', label: 'Seguro' },
-  { value: 'afp', label: 'AFP' },
-  { value: 'contador', label: 'Contador' },
+  { value: 'rent', label: 'Alquiler' },
+  { value: 'salaries', label: 'Salarios' },
+  { value: 'services', label: 'Servicios (Luz, Agua, Internet)' },
+  { value: 'taxes', label: 'Impuestos' },
+  { value: 'maintenance', label: 'Mantenimiento' },
 ];
 
 export const VIATICOS_OPTIONS = [
-  { value: 'tecnicos', label: 'Técnicos' },
-  { value: 'proyecto', label: 'Proyecto' },
-  { value: 'representantes', label: 'Representantes' },
-  { value: 'ocasional', label: 'Ocasional' },
+  { value: 'transport', label: 'Transporte' },
+  { value: 'food', label: 'Alimentación' },
+  { value: 'lodging', label: 'Alojamiento' },
+  { value: 'fuel', label: 'Combustible' },
+  { value: 'other_viaticos', label: 'Otros Viáticos' },
 ];
-
-// ACCOUNTS ya no es una constante aquí, se cargará dinámicamente desde Supabase
-// export const ACCOUNTS = [
-//   { value: 'bbva_empresa', label: 'BBVA Empresa' },
-//   { value: 'efectivo', label: 'Efectivo' },
-// ];
 
 export const TRANSACTION_TYPES = [
   { value: 'ingreso', label: 'Ingreso' },
