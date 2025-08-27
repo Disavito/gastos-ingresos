@@ -612,7 +612,7 @@ const ExpenseIncomeForm: React.FC = () => {
               name="category"
               value={formData.category || ''}
               onChange={handleChange}
-              className="w-full p-3 pr-10 bg-white border border-border rounded-xl text-input-text-dark focus:ring-primary focus:border-primary appearance-none transition-all duration-200 ease-in-out"
+              className="w-full p-3 pr-10 bg-white border border-border rounded-xl text-text focus:ring-primary focus:border-primary appearance-none transition-all duration-200 ease-in-out"
               required
             >
               <option value="" disabled>Selecciona una categoría</option>
@@ -633,7 +633,7 @@ const ExpenseIncomeForm: React.FC = () => {
                 name="subCategory"
                 value={formData.subCategory || ''}
                 onChange={handleChange}
-                className="w-full p-3 pr-10 bg-white border border-border rounded-xl text-input-text-dark focus:ring-primary focus:border-primary appearance-none transition-all duration-200 ease-in-out"
+                className="w-full p-3 pr-10 bg-white border border-border rounded-xl text-text focus:ring-primary focus:border-primary appearance-none transition-all duration-200 ease-in-out"
                 required
               >
                 <option value="" disabled>Selecciona un tipo</option>
@@ -655,7 +655,7 @@ const ExpenseIncomeForm: React.FC = () => {
                 name="subCategory"
                 value={formData.subCategory || ''}
                 onChange={handleChange}
-                className="w-full p-3 pr-10 bg-white border border-border rounded-xl text-input-text-dark focus:ring-primary focus:border-primary appearance-none transition-all duration-200 ease-in-out"
+                className="w-full p-3 pr-10 bg-white border border-border rounded-xl text-text focus:ring-primary focus:border-primary appearance-none transition-all duration-200 ease-in-out"
                 required
               >
                 <option value="" disabled>Selecciona un tipo</option>
@@ -686,7 +686,7 @@ const ExpenseIncomeForm: React.FC = () => {
               value={formData.receiptNumber || ''}
               onChange={handleChange}
               onBlur={handleReceiptNumberLookup} // Trigger lookup on blur
-              className={`w-full pl-10 p-3 bg-white border border-border rounded-xl text-input-text-dark focus:ring-primary focus:border-primary transition-all duration-200 ease-in-out ${
+              className={`w-full pl-10 p-3 bg-white border border-border rounded-xl text-text focus:ring-primary focus:border-primary transition-all duration-200 ease-in-out ${
                 isEditingExistingIncome ? 'bg-gray-100 cursor-not-allowed' : ''
               }`}
               placeholder="Ej. REC00123"
@@ -754,7 +754,7 @@ const ExpenseIncomeForm: React.FC = () => {
               value={formData.dni || ''}
               onChange={handleChange}
               onBlur={handleDniLookup}
-              className="w-full pl-10 p-3 bg-white border border-border rounded-xl text-input-text-dark focus:ring-primary focus:border-primary transition-all duration-200 ease-in-out"
+              className="w-full pl-10 p-3 bg-white border border-border rounded-xl text-text focus:ring-primary focus:border-primary transition-all duration-200 ease-in-out"
               placeholder="Ej. 12345678"
               maxLength={8}
               required
@@ -778,7 +778,7 @@ const ExpenseIncomeForm: React.FC = () => {
               value={formData.fullName || ''}
               onChange={handleChange}
               readOnly={!!formData.dni && !dniError && !isDniLoading && formData.fullName !== ''}
-              className={`w-full pl-10 p-3 bg-white border border-border rounded-xl text-input-text-dark focus:ring-primary focus:border-primary transition-all duration-200 ease-in-out ${
+              className={`w-full pl-10 p-3 bg-white border border-border rounded-xl text-text focus:ring-primary focus:border-primary transition-all duration-200 ease-in-out ${
                 (!!formData.dni && !dniError && !isDniLoading && formData.fullName !== '') ? 'bg-gray-100 cursor-not-allowed' : ''
               }`}
               placeholder="Nombre Apellido"
@@ -791,349 +791,323 @@ const ExpenseIncomeForm: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-gradient-to-br from-primary to-secondary">
-      <div className="flex w-full max-w-4xl rounded-xl shadow-2xl overflow-hidden border border-border">
-        {/* Left Panel: Form */}
-        <div className="flex-1 bg-surface p-6 sm:p-8 lg:p-10 animate-fade-in">
-          <div className="flex justify-center mb-8">
-            <DollarSign className="text-primary" size={48} />
+    <div className="min-h-screen bg-background font-sans text-text flex items-center justify-center p-4 sm:p-6 lg:p-8">
+      <div className="bg-surface rounded-xl shadow-2xl p-6 sm:p-8 lg:p-10 w-full max-w-2xl border border-border animate-fade-in">
+        {/* Se ha eliminado el div con el icono DollarSign */}
+        <h2 className="text-3xl sm:text-4xl font-bold text-center text-primary mb-2 leading-tight">
+          Registro de <span className="text-accent">Movimientos</span>
+        </h2>
+
+        {submitMessage && (
+          <div className={`p-4 mb-6 rounded-xl text-center font-semibold ${
+            submitMessage.type === 'success' ? 'bg-success/20 text-success' : 'bg-error/20 text-error'
+          }`}>
+            {submitMessage.text}
           </div>
-          <h2 className="text-3xl sm:text-4xl font-bold text-center text-primary mb-2 leading-tight">
-            Registro de <span className="text-accent">Movimientos</span>
-          </h2>
+        )}
 
-          {submitMessage && (
-            <div className={`p-4 mb-6 rounded-xl text-center font-semibold ${
-              submitMessage.type === 'success' ? 'bg-success/20 text-success' : 'bg-error/20 text-error'
-            }`}>
-              {submitMessage.text}
+        {!showConfirmation ? (
+          <>
+            <div className="flex justify-center gap-4 mb-6">
+              <button
+                type="button"
+                onClick={() => handleTypeChange('expense')}
+                className={`flex items-center gap-2 px-6 py-3 rounded-full text-lg font-semibold transition-all duration-300 ease-in-out
+                  ${formData.type === 'expense'
+                    ? 'bg-error text-white shadow-lg shadow-error/30 transform scale-105'
+                    : 'bg-surface text-textSecondary hover:bg-border hover:text-text'
+                  }`}
+              >
+                <TrendingDown size={20} /> Gasto
+              </button>
+              <button
+                type="button"
+                onClick={() => handleTypeChange('income')}
+                className={`flex items-center gap-2 px-6 py-3 rounded-full text-lg font-semibold transition-all duration-300 ease-in-out
+                  ${formData.type === 'income'
+                    ? 'bg-success text-white shadow-lg shadow-success/30 transform scale-105'
+                    : 'bg-surface text-textSecondary hover:bg-border hover:text-text'
+                  }`}
+              >
+                <TrendingUp size={20} /> Ingreso
+              </button>
             </div>
-          )}
 
-          {!showConfirmation ? (
-            <>
-              <div className="flex justify-center gap-4 mb-6">
-                <button
-                  type="button"
-                  onClick={() => handleTypeChange('expense')}
-                  className={`flex items-center gap-2 px-6 py-3 rounded-full text-lg font-semibold transition-all duration-300 ease-in-out
-                    ${formData.type === 'expense'
-                      ? 'bg-error text-white shadow-lg shadow-error/30 transform scale-105'
-                      : 'bg-surface text-textSecondary hover:bg-border hover:text-text'
-                    }`}
-                >
-                  <TrendingDown size={20} /> Gasto
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleTypeChange('income')}
-                  className={`flex items-center gap-2 px-6 py-3 rounded-full text-lg font-semibold transition-all duration-300 ease-in-out
-                    ${formData.type === 'income'
-                      ? 'bg-success text-white shadow-lg shadow-success/30 transform scale-105'
-                      : 'bg-surface text-textSecondary hover:bg-border hover:text-text'
-                    }`}
-                >
-                  <TrendingUp size={20} /> Ingreso
-                </button>
+            {formData.type === 'expense' && (
+              <div className="flex items-center gap-2 mb-6 justify-start">
+                <span className="text-xl font-bold text-accent font-mono">
+                  {isExpenseCounterLoading ? 'Cargando ID...' : formData.numeroGasto} {/* Mostrar estado de carga */}
+                </span>
+                {!isExpenseCounterLoading && formData.numeroGasto && ( // Solo mostrar botón de copiar si no está cargando y hay un ID
+                  <button
+                    type="button"
+                    onClick={() => navigator.clipboard.writeText(formData.numeroGasto || '')}
+                    className="p-1 rounded-md hover:bg-border transition-colors duration-200"
+                    title="Copiar ID"
+                  >
+                    <Copy size={20} className="text-textSecondary" />
+                  </button>
+                )}
               </div>
+            )}
 
+            <form onSubmit={handlePreviewSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {formData.type === 'expense' && (
-                <div className="flex items-center gap-2 mb-6 justify-start">
-                  <span className="text-xl font-bold text-accent font-mono">
-                    {isExpenseCounterLoading ? 'Cargando ID...' : formData.numeroGasto} {/* Mostrar estado de carga */}
-                  </span>
-                  {!isExpenseCounterLoading && formData.numeroGasto && ( // Solo mostrar botón de copiar si no está cargando y hay un ID
-                    <button
-                      type="button"
-                      onClick={() => navigator.clipboard.writeText(formData.numeroGasto || '')}
-                      className="p-1 rounded-md hover:bg-border transition-colors duration-200"
-                      title="Copiar ID"
-                    >
-                      <Copy size={20} className="text-textSecondary" />
-                    </button>
-                  )}
-                </div>
+                <>
+                  <div className="relative">
+                    <label htmlFor="amount" className="block text-textSecondary text-sm font-medium mb-2">Monto</label>
+                    <div className="relative flex items-center">
+                      <DollarSign className="absolute left-3 text-textSecondary" size={20} />
+                      <input
+                        type="number"
+                        id="amount"
+                        name="amount"
+                        value={formData.amount}
+                        onChange={handleChange}
+                        className="w-full pl-10 p-3 bg-white border border-border rounded-xl text-text focus:ring-primary focus:border-primary transition-all duration-200 ease-in-out"
+                        placeholder="0.00"
+                        step="0.01"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="relative">
+                    <label htmlFor="account" className="block text-textSecondary text-sm font-medium mb-2">Cuenta</label>
+                    <div className="relative">
+                      <Wallet className="absolute left-3 top-1/2 -translate-y-1/2 text-textSecondary" size={20} />
+                      <select
+                        id="account"
+                        name="account"
+                        value={formData.account}
+                        onChange={handleChange}
+                        className="w-full pl-10 p-3 pr-10 bg-white border border-border rounded-xl text-text focus:ring-primary focus:border-primary appearance-none transition-all duration-200 ease-in-out"
+                        required
+                        disabled={isAccountsLoading}
+                      >
+                        <option value="" disabled>
+                          {isAccountsLoading ? 'Cargando cuentas...' : (accountsError ? 'Error al cargar' : 'Selecciona una cuenta')}
+                        </option>
+                        {accountsList.map(acc => (
+                          <option key={acc.id} value={acc.name}>{acc.name}</option>
+                        ))}
+                      </select>
+                      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-textSecondary pointer-events-none" size={20} />
+                    </div>
+                    {accountsError && <p className="text-error text-xs mt-1">{accountsError}</p>}
+                  </div>
+
+                  {renderExpenseCategoryFields()}
+
+                  <div className="relative">
+                    <label htmlFor="date" className="block text-textSecondary text-sm font-medium mb-2">Fecha</label>
+                    <div className="relative flex items-center">
+                      <Calendar className="absolute left-3 text-textSecondary" size={20} />
+                      <input
+                        type="date"
+                        id="date"
+                        name="date"
+                        value={formData.date}
+                        onChange={handleChange}
+                        className="w-full pl-10 p-3 bg-white border border-border rounded-xl text-text focus:ring-primary focus:border-primary transition-all duration-200 ease-in-out"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="relative">
+                    <label htmlFor="person" className="block text-textSecondary text-sm font-medium mb-2">Colaborador</label> {/* Etiqueta actualizada */}
+                    <div className="relative">
+                      <User className="absolute left-3 top-1/2 -translate-y-1/2 text-textSecondary" size={20} />
+                      <select
+                        id="person"
+                        name="person"
+                        value={formData.person || ''}
+                        onChange={handleChange}
+                        className="w-full pl-10 p-3 pr-10 bg-white border border-border rounded-xl text-text focus:ring-primary focus:border-primary appearance-none transition-all duration-200 ease-in-out"
+                        required
+                        disabled={isPeopleLoading} // Deshabilitar mientras carga
+                      >
+                        <option value="" disabled>
+                          {isPeopleLoading ? 'Cargando colaboradores...' : (peopleError ? 'Error al cargar' : 'Selecciona un colaborador')}
+                        </option>
+                        {peopleList.map(p => (
+                          <option key={p.id} value={p.name}>{p.name}</option>
+                        ))}
+                      </select>
+                      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-textSecondary pointer-events-none" size={20} />
+                    </div>
+                    {peopleError && <p className="text-error text-xs mt-1">{peopleError}</p>}
+                  </div>
+
+                  <div className="relative md:col-span-2">
+                    <label htmlFor="description" className="block text-textSecondary text-sm font-medium mb-2">Descripción</label>
+                    <div className="relative flex items-center">
+                      <FileText className="absolute left-3 top-3 text-textSecondary" size={20} />
+                      <textarea
+                        id="description"
+                        name="description"
+                        value={formData.description || ''}
+                        onChange={handleChange}
+                        rows={3}
+                        className="w-full pl-10 p-3 bg-white border border-border rounded-xl text-text focus:ring-primary focus:border-primary resize-y transition-all duration-200 ease-in-out"
+                        placeholder="Detalles del movimiento..."
+                        required
+                      ></textarea>
+                    </div>
+                  </div>
+                </>
               )}
 
-              <form onSubmit={handlePreviewSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {formData.type === 'expense' && (
-                  <>
+              {formData.type === 'income' && (
+                <>
+                  {renderIncomeInitialFields()}
+
+                  <div className="relative">
+                    <label htmlFor="date" className="block text-textSecondary text-sm font-medium mb-2">Fecha</label>
+                    <div className="relative flex items-center">
+                      <Calendar className="absolute left-3 text-textSecondary" size={20} />
+                      <input
+                        type="date"
+                        id="date"
+                        name="date"
+                        value={formData.date}
+                        onChange={handleChange}
+                        className="w-full pl-10 p-3 bg-white border border-border rounded-xl text-text focus:ring-primary focus:border-primary transition-all duration-200 ease-in-out"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="relative">
+                    <label htmlFor="amount" className="block text-textSecondary text-sm font-medium mb-2">Monto</label>
+                    <div className="relative flex items-center">
+                      <DollarSign className="absolute left-3 text-textSecondary" size={20} />
+                      <input
+                        type="number"
+                        id="amount"
+                        name="amount"
+                        value={formData.amount}
+                        onChange={handleChange}
+                        className="w-full pl-10 p-3 bg-white border border-border rounded-xl text-text focus:ring-primary focus:border-primary transition-all duration-200 ease-in-out"
+                        placeholder="0.00"
+                        step="0.01"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="relative">
+                    <label htmlFor="account" className="block text-textSecondary text-sm font-medium mb-2">Cuenta</label>
                     <div className="relative">
-                      <label htmlFor="amount" className="block text-textSecondary text-sm font-medium mb-2">Monto</label>
-                      <div className="relative flex items-center">
-                        <DollarSign className="absolute left-3 text-textSecondary" size={20} />
-                        <input
-                          type="number"
-                          id="amount"
-                          name="amount"
-                          value={formData.amount}
-                          onChange={handleChange}
-                          className="w-full pl-10 p-3 bg-white border border-border rounded-xl text-input-text-dark focus:ring-primary focus:border-primary transition-all duration-200 ease-in-out"
-                          placeholder="0.00"
-                          step="0.01"
-                          required
-                        />
-                      </div>
+                      <Wallet className="absolute left-3 top-1/2 -translate-y-1/2 text-textSecondary" size={20} />
+                      <select
+                        id="account"
+                        name="account"
+                        value={formData.account}
+                        onChange={handleChange}
+                        className="w-full pl-10 p-3 pr-10 bg-white border border-border rounded-xl text-text focus:ring-primary focus:border-primary appearance-none transition-all duration-200 ease-in-out"
+                        required
+                        disabled={isAccountsLoading}
+                      >
+                        <option value="" disabled>
+                          {isAccountsLoading ? 'Cargando cuentas...' : (accountsError ? 'Error al cargar' : 'Selecciona una cuenta')}
+                        </option>
+                        {accountsList.map(acc => (
+                          <option key={acc.id} value={acc.name}>{acc.name}</option>
+                        ))}
+                      </select>
+                      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-textSecondary pointer-events-none" size={20} />
                     </div>
+                    {accountsError && <p className="text-error text-xs mt-1">{accountsError}</p>}
+                  </div>
 
+                  <div className="relative">
+                    <label htmlFor="transactionType" className="block text-textSecondary text-sm font-medium mb-2">Tipo de Transacción</label>
                     <div className="relative">
-                      <label htmlFor="account" className="block text-textSecondary text-sm font-medium mb-2">Cuenta</label>
-                      <div className="relative">
-                        <Wallet className="absolute left-3 top-1/2 -translate-y-1/2 text-textSecondary" size={20} />
-                        <select
-                          id="account"
-                          name="account"
-                          value={formData.account}
-                          onChange={handleChange}
-                          className="w-full pl-10 p-3 pr-10 bg-white border border-border rounded-xl text-input-text-dark focus:ring-primary focus:border-primary appearance-none transition-all duration-200 ease-in-out"
-                          required
-                          disabled={isAccountsLoading}
-                        >
-                          <option value="" disabled>
-                            {isAccountsLoading ? 'Cargando cuentas...' : (accountsError ? 'Error al cargar' : 'Selecciona una cuenta')}
-                          </option>
-                          {accountsList.map(acc => (
-                            <option key={acc.id} value={acc.name}>{acc.name}</option>
-                          ))}
-                        </select>
-                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-textSecondary pointer-events-none" size={20} />
-                      </div>
-                      {accountsError && <p className="text-error text-xs mt-1">{accountsError}</p>}
+                      <select
+                        id="transactionType"
+                        name="transactionType"
+                        value={formData.transactionType || ''}
+                        onChange={handleChange}
+                        className="w-full p-3 pr-10 bg-white border border-border rounded-xl text-text focus:ring-primary focus:border-primary appearance-none transition-all duration-200 ease-in-out"
+                        required
+                      >
+                        <option value="" disabled>Selecciona un tipo</option>
+                        {TRANSACTION_TYPES.map(type => (
+                          <option key={type.value} value={type.value}>{type.label}</option>
+                        ))}
+                      </select>
+                      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-textSecondary pointer-events-none" size={20} />
                     </div>
+                  </div>
+                </>
+              )}
 
-                    {renderExpenseCategoryFields()}
-
-                    <div className="relative">
-                      <label htmlFor="date" className="block text-textSecondary text-sm font-medium mb-2">Fecha</label>
-                      <div className="relative flex items-center">
-                        <Calendar className="absolute left-3 text-textSecondary" size={20} />
-                        <input
-                          type="date"
-                          id="date"
-                          name="date"
-                          value={formData.date}
-                          onChange={handleChange}
-                          className="w-full pl-10 p-3 bg-white border border-border rounded-xl text-input-text-dark focus:ring-primary focus:border-primary transition-all duration-200 ease-in-out"
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    <div className="relative">
-                      <label htmlFor="person" className="block text-textSecondary text-sm font-medium mb-2">Colaborador</label> {/* Etiqueta actualizada */}
-                      <div className="relative">
-                        <User className="absolute left-3 top-1/2 -translate-y-1/2 text-textSecondary" size={20} />
-                        <select
-                          id="person"
-                          name="person"
-                          value={formData.person || ''}
-                          onChange={handleChange}
-                          className="w-full pl-10 p-3 pr-10 bg-white border border-border rounded-xl text-input-text-dark focus:ring-primary focus:border-primary appearance-none transition-all duration-200 ease-in-out"
-                          required
-                          disabled={isPeopleLoading} // Deshabilitar mientras carga
-                        >
-                          <option value="" disabled>
-                            {isPeopleLoading ? 'Cargando colaboradores...' : (peopleError ? 'Error al cargar' : 'Selecciona un colaborador')}
-                          </option>
-                          {peopleList.map(p => (
-                            <option key={p.id} value={p.name}>{p.name}</option>
-                          ))}
-                        </select>
-                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-textSecondary pointer-events-none" size={20} />
-                      </div>
-                      {peopleError && <p className="text-error text-xs mt-1">{peopleError}</p>}
-                    </div>
-
-                    <div className="relative md:col-span-2">
-                      <label htmlFor="description" className="block text-textSecondary text-sm font-medium mb-2">Descripción</label>
-                      <div className="relative flex items-center">
-                        <FileText className="absolute left-3 top-3 text-textSecondary" size={20} />
-                        <textarea
-                          id="description"
-                          name="description"
-                          value={formData.description || ''}
-                          onChange={handleChange}
-                          rows={3}
-                          className="w-full pl-10 p-3 bg-white border border-border rounded-xl text-input-text-dark focus:ring-primary focus:border-primary resize-y transition-all duration-200 ease-in-out"
-                          placeholder="Detalles del movimiento..."
-                          required
-                        ></textarea>
-                      </div>
-                    </div>
-                  </>
-                )}
-
-                {formData.type === 'income' && (
-                  <>
-                    {renderIncomeInitialFields()}
-
-                    <div className="relative">
-                      <label htmlFor="date" className="block text-textSecondary text-sm font-medium mb-2">Fecha</label>
-                      <div className="relative flex items-center">
-                        <Calendar className="absolute left-3 text-textSecondary" size={20} />
-                        <input
-                          type="date"
-                          id="date"
-                          name="date"
-                          value={formData.date}
-                          onChange={handleChange}
-                          className="w-full pl-10 p-3 bg-white border border-border rounded-xl text-input-text-dark focus:ring-primary focus:border-primary transition-all duration-200 ease-in-out"
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    <div className="relative">
-                      <label htmlFor="amount" className="block text-textSecondary text-sm font-medium mb-2">Monto</label>
-                      <div className="relative flex items-center">
-                        <DollarSign className="absolute left-3 text-textSecondary" size={20} />
-                        <input
-                          type="number"
-                          id="amount"
-                          name="amount"
-                          value={formData.amount}
-                          onChange={handleChange}
-                          className="w-full pl-10 p-3 bg-white border border-border rounded-xl text-input-text-dark focus:ring-primary focus:border-primary transition-all duration-200 ease-in-out"
-                          placeholder="0.00"
-                          step="0.01"
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    <div className="relative">
-                      <label htmlFor="account" className="block text-textSecondary text-sm font-medium mb-2">Cuenta</label>
-                      <div className="relative">
-                        <Wallet className="absolute left-3 top-1/2 -translate-y-1/2 text-textSecondary" size={20} />
-                        <select
-                          id="account"
-                          name="account"
-                          value={formData.account}
-                          onChange={handleChange}
-                          className="w-full pl-10 p-3 pr-10 bg-white border border-border rounded-xl text-input-text-dark focus:ring-primary focus:border-primary appearance-none transition-all duration-200 ease-in-out"
-                          required
-                          disabled={isAccountsLoading}
-                        >
-                          <option value="" disabled>
-                            {isAccountsLoading ? 'Cargando cuentas...' : (accountsError ? 'Error al cargar' : 'Selecciona una cuenta')}
-                          </option>
-                          {accountsList.map(acc => (
-                            <option key={acc.id} value={acc.name}>{acc.name}</option>
-                          ))}
-                        </select>
-                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-textSecondary pointer-events-none" size={20} />
-                      </div>
-                      {accountsError && <p className="text-error text-xs mt-1">{accountsError}</p>}
-                    </div>
-
-                    <div className="relative">
-                      <label htmlFor="transactionType" className="block text-textSecondary text-sm font-medium mb-2">Tipo de Transacción</label>
-                      <div className="relative">
-                        <select
-                          id="transactionType"
-                          name="transactionType"
-                          value={formData.transactionType || ''}
-                          onChange={handleChange}
-                          className="w-full p-3 pr-10 bg-white border border-border rounded-xl text-input-text-dark focus:ring-primary focus:border-primary appearance-none transition-all duration-200 ease-in-out"
-                          required
-                        >
-                          <option value="" disabled>Selecciona un tipo</option>
-                          {TRANSACTION_TYPES.map(type => (
-                            <option key={type.value} value={type.value}>{type.label}</option>
-                          ))}
-                        </select>
-                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-textSecondary pointer-events-none" size={20} />
-                      </div>
-                    </div>
-                  </>
-                )}
-
-                <div className="md:col-span-2 mt-6">
-                  {/* Deshabilitar si se está enviando o si el contador de gastos está cargando */}
-                  <button
-                    type="submit"
-                    className="w-full bg-primary text-white py-3 rounded-xl text-lg font-semibold hover:bg-primary/90 transition-all duration-300 ease-in-out shadow-lg shadow-primary/40 transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed"
-                    disabled={isSubmitting || (formData.type === 'expense' && isExpenseCounterLoading)}
-                  >
-                    {isSubmitting ? 'Procesando...' : (formData.type === 'expense' ? (isExpenseCounterLoading ? 'Cargando ID...' : 'Registrar Gasto') : (isEditingExistingIncome ? 'Actualizar Recibo' : 'Registrar Ingreso'))}
-                  </button>
-                </div>
-              </form>
-            </>
-          ) : (
-            <div className="animate-fade-in">
-              <h3 className="text-2xl sm:text-3xl font-bold text-center text-primary mb-6">
-                Confirmar <span className="text-accent">Movimiento</span>
-              </h3>
-              <div className="bg-surface p-6 rounded-xl border border-border mb-8 shadow-inner">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-lg">
-                  <p><strong className="text-textSecondary">Tipo:</strong> <span className={formData.type === 'expense' ? 'text-error' : 'text-success'}>{formData.type === 'expense' ? 'Gasto' : 'Ingreso'}</span></p>
-                  <p><strong className="text-textSecondary">Fecha:</strong> {formData.date}</p>
-
-                  {formData.type === 'expense' ? (
-                    <>
-                      <p><strong className="text-textSecondary">ID Gasto:</strong> <span className="text-lg text-accent break-all">{formData.numeroGasto}</span></p>
-                      <p><strong className="text-textSecondary">Monto:</strong> <span className="text-primary font-bold">${formData.amount}</span></p>
-                      <p><strong className="text-textSecondary">Cuenta:</strong> {formData.account}</p> {/* Muestra el nombre de la cuenta directamente */}
-                      <p><strong className="text-textSecondary">Categoría:</strong> {getCategoryLabel(formData.category, EXPENSE_CATEGORIES)}</p>
-                      {formData.category === 'fixed' && <p><strong className="text-textSecondary">Subcategoría:</strong> {getCategoryLabel(formData.subCategory, FIXED_EXPENSE_OPTIONS)}</p>}
-                      {formData.category === 'viaticos' && <p><strong className="text-textSecondary">Subcategoría:</strong> {getCategoryLabel(formData.subCategory, VIATICOS_OPTIONS)}</p>}
-                      <p className="sm:col-span-2"><strong className="text-textSecondary">Descripción:</strong> {formData.description}</p>
-                      <p><strong className="text-textSecondary">Colaborador:</strong> {formData.person}</p> {/* Muestra el nombre del colaborador */}
-                    </>
-                  ) : ( // formData.type === 'income'
-                    <>
-                      <p><strong className="text-textSecondary">Número de Recibo:</strong> <span className="text-lg text-accent break-all">{formData.receiptNumber}</span></p>
-                      <p><strong className="text-textSecondary">DNI:</strong> {formData.dni}</p>
-                      <p><strong className="text-textSecondary">Nombre Completo:</strong> {formData.fullName}</p>
-                      <p><strong className="text-textSecondary">Monto:</strong> <span className="text-primary font-bold">${formData.amount}</span></p>
-                      <p><strong className="text-textSecondary">Cuenta:</strong> {formData.account}</p> {/* Muestra el nombre de la cuenta directamente */}
-                      <p><strong className="text-textSecondary">Tipo de Transacción:</strong> {getCategoryLabel(formData.transactionType, TRANSACTION_TYPES)}</p>
-                    </>
-                  )}
-                </div>
+              <div className="md:col-span-2 mt-6">
+                {/* Deshabilitar si se está enviando o si el contador de gastos está cargando */}
+                <button
+                  type="submit"
+                  className="w-full bg-primary text-white py-3 rounded-xl text-lg font-semibold hover:bg-primary/90 transition-all duration-300 ease-in-out shadow-lg shadow-primary/40 transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={isSubmitting || (formData.type === 'expense' && isExpenseCounterLoading)}
+                >
+                  {isSubmitting ? 'Procesando...' : (formData.type === 'expense' ? (isExpenseCounterLoading ? 'Cargando ID...' : 'Registrar Gasto') : (isEditingExistingIncome ? 'Actualizar Recibo' : 'Registrar Ingreso'))}
+                </button>
               </div>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <button
-                  type="button"
-                  onClick={() => setShowConfirmation(false)}
-                  className="flex-1 flex items-center justify-center gap-2 bg-border text-textSecondary py-3 rounded-xl text-lg font-semibold hover:bg-border/70 transition-all duration-300 ease-in-out shadow-lg shadow-border/20 transform hover:-translate-y-1"
-                >
-                  <Edit size={20} /> Editar
-                </button>
-                <button
-                  type="button"
-                  onClick={handleConfirmSubmit}
-                  disabled={isSubmitting}
-                  className="flex-1 flex items-center justify-center gap-2 bg-success text-white py-3 rounded-xl text-lg font-semibold hover:bg-success/90 transition-all duration-300 ease-in-out shadow-lg shadow-success/40 transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isSubmitting ? 'Procesando...' : <><CheckCircle size={20} /> Confirmar y {isEditingExistingIncome ? 'Actualizar' : 'Registrar'}</>}
-                </button>
+            </form>
+          </>
+        ) : (
+          <div className="animate-fade-in">
+            <h3 className="text-2xl sm:text-3xl font-bold text-center text-primary mb-6">
+              Confirmar <span className="text-accent">Movimiento</span>
+            </h3>
+            <div className="bg-surface p-6 rounded-xl border border-border mb-8 shadow-inner">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-lg">
+                <p><strong className="text-textSecondary">Tipo:</strong> <span className={formData.type === 'expense' ? 'text-error' : 'text-success'}>{formData.type === 'expense' ? 'Gasto' : 'Ingreso'}</span></p>
+                <p><strong className="text-textSecondary">Fecha:</strong> {formData.date}</p>
+
+                {formData.type === 'expense' ? (
+                  <>
+                    <p><strong className="text-textSecondary">ID Gasto:</strong> <span className="text-lg text-accent break-all">{formData.numeroGasto}</span></p>
+                    <p><strong className="text-textSecondary">Monto:</strong> <span className="text-primary font-bold">${formData.amount}</span></p>
+                    <p><strong className="text-textSecondary">Cuenta:</strong> {formData.account}</p> {/* Muestra el nombre de la cuenta directamente */}
+                    <p><strong className="text-textSecondary">Categoría:</strong> {getCategoryLabel(formData.category, EXPENSE_CATEGORIES)}</p>
+                    {formData.category === 'fixed' && <p><strong className="text-textSecondary">Subcategoría:</strong> {getCategoryLabel(formData.subCategory, FIXED_EXPENSE_OPTIONS)}</p>}
+                    {formData.category === 'viaticos' && <p><strong className="text-textSecondary">Subcategoría:</strong> {getCategoryLabel(formData.subCategory, VIATICOS_OPTIONS)}</p>}
+                    <p className="sm:col-span-2"><strong className="text-textSecondary">Descripción:</strong> {formData.description}</p>
+                    <p><strong className="text-textSecondary">Colaborador:</strong> {formData.person}</p> {/* Muestra el nombre del colaborador */}
+                  </>
+                ) : ( // formData.type === 'income'
+                  <>
+                    <p><strong className="text-textSecondary">Número de Recibo:</strong> <span className="text-lg text-accent break-all">{formData.receiptNumber}</span></p>
+                    <p><strong className="text-textSecondary">DNI:</strong> {formData.dni}</p>
+                    <p><strong className="text-textSecondary">Nombre Completo:</strong> {formData.fullName}</p>
+                    <p><strong className="text-textSecondary">Monto:</strong> <span className="text-primary font-bold">${formData.amount}</span></p>
+                    <p><strong className="text-textSecondary">Cuenta:</strong> {formData.account}</p> {/* Muestra el nombre de la cuenta directamente */}
+                    <p><strong className="text-textSecondary">Tipo de Transacción:</strong> {getCategoryLabel(formData.transactionType, TRANSACTION_TYPES)}</p>
+                  </>
+                )}
               </div>
             </div>
-          )}
-        </div>
-
-        {/* Right Panel: Decorative/Informative */}
-        <div className="hidden md:flex flex-1 relative items-center justify-center p-6 bg-gradient-to-br from-primary to-secondary">
-          {/* Background Image with Overlay */}
-          <div className="absolute inset-0 bg-cover bg-center opacity-20" style={{ backgroundImage: "url('https://images.pexels.com/photos/6863289/pexels-photo-6863289.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2')" }}></div>
-          
-          {/* Content Box */}
-          <div className="relative z-10 text-center p-6 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 shadow-lg">
-            <h3 className="text-3xl font-bold text-white mb-4 leading-tight">
-              Simplifica tus finanzas, <br /> maximiza tu control.
-            </h3>
-            <p className="text-white/80 text-lg">
-              Registra tus movimientos de forma intuitiva y eficiente.
-            </p>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <button
+                type="button"
+                onClick={() => setShowConfirmation(false)}
+                className="flex-1 flex items-center justify-center gap-2 bg-border text-textSecondary py-3 rounded-xl text-lg font-semibold hover:bg-border/70 transition-all duration-300 ease-in-out shadow-lg shadow-border/20 transform hover:-translate-y-1"
+              >
+                <Edit size={20} /> Editar
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmSubmit}
+                disabled={isSubmitting}
+                className="flex-1 flex items-center justify-center gap-2 bg-success text-white py-3 rounded-xl text-lg font-semibold hover:bg-success/90 transition-all duration-300 ease-in-out shadow-lg shadow-success/40 transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSubmitting ? 'Procesando...' : <><CheckCircle size={20} /> Confirmar y {isEditingExistingIncome ? 'Actualizar' : 'Registrar'}</>}
+              </button>
+            </div>
           </div>
-
-          {/* Subtle background patterns (optional, for visual interest) */}
-          <div className="absolute top-4 left-4 w-16 h-16 bg-white/5 rounded-full"></div>
-          <div className="absolute bottom-8 right-8 w-24 h-24 bg-white/5 rounded-full"></div>
-          <div className="absolute top-1/4 right-1/4 w-8 h-8 bg-white/5 rounded-md rotate-45"></div>
-        </div>
+        )}
       </div>
     </div>
   );
