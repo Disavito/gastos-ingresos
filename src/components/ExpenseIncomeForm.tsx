@@ -38,7 +38,7 @@ interface FormData {
   numeroGasto?: string; // New: To store the GA001 format
   category?: string;
   subCategory?: string;
-  person?: string; // Ahora será el 'name' del colaborador
+  colaborador_id?: string; // Changed: Now storing colaborador_id
   description?: string;
 
   // Income-specific fields (optional for expense)
@@ -75,7 +75,7 @@ const ExpenseIncomeForm: React.FC = () => {
     description: '',
     amount: '',
     account: '',
-    person: '',
+    colaborador_id: '', // Changed: Initialize colaborador_id
     date: new Date().toISOString().split('T')[0],
   }));
 
@@ -230,7 +230,7 @@ const ExpenseIncomeForm: React.FC = () => {
           category: '',
           subCategory: '',
           description: '',
-          person: '', // Reset person
+          colaborador_id: '', // Reset colaborador_id
           receiptNumber: undefined,
           fullName: undefined,
           dni: undefined,
@@ -244,7 +244,7 @@ const ExpenseIncomeForm: React.FC = () => {
           category: undefined,
           subCategory: undefined,
           description: undefined,
-          person: undefined,
+          colaborador_id: undefined,
           receiptNumber: '',
           fullName: '',
           dni: '',
@@ -359,6 +359,7 @@ const ExpenseIncomeForm: React.FC = () => {
         transactionType: existingIncomeForEdit.transaction_type,
         incomeId: existingIncomeForEdit.id, // Store the ID for update
         numeroGasto: undefined, // Ensure numeroGasto is cleared for income
+        colaborador_id: undefined,
       });
       setIsEditingExistingIncome(true);
       setReceiptNumberError(null); // Clear error message
@@ -431,7 +432,7 @@ const ExpenseIncomeForm: React.FC = () => {
           date: formData.date,
           category: formData.category,
           sub_category: formData.subCategory,
-          person: formData.person,
+          colaborador_id: formData.colaborador_id, // Changed: Use colaborador_id
           description: formData.description,
         };
         console.log('DEBUG: Attempting to insert expense with payload:', expensePayload);
@@ -458,7 +459,7 @@ const ExpenseIncomeForm: React.FC = () => {
           description: '',
           amount: '',
           account: '',
-          person: '',
+          colaborador_id: '', // Reset colaborador_id
           date: new Date().toISOString().split('T')[0],
           receiptNumber: undefined,
           fullName: undefined,
@@ -579,7 +580,7 @@ const ExpenseIncomeForm: React.FC = () => {
           category: undefined,
           subCategory: undefined,
           description: undefined,
-          person: undefined,
+          colaborador_id: undefined,
           incomeId: undefined,
         });
         setDniError(null);
@@ -916,13 +917,13 @@ const ExpenseIncomeForm: React.FC = () => {
                   </div>
 
                   <div className="relative">
-                    <label htmlFor="person" className="block text-textSecondary text-sm font-medium mb-2">Colaborador</label> {/* Etiqueta actualizada */}
+                    <label htmlFor="colaborador_id" className="block text-textSecondary text-sm font-medium mb-2">Colaborador</label>
                     <div className="relative">
                       <User className="absolute left-3 top-1/2 -translate-y-1/2 text-textSecondary" size={20} />
                       <select
-                        id="person"
-                        name="person"
-                        value={formData.person || ''}
+                        id="colaborador_id"
+                        name="colaborador_id"
+                        value={formData.colaborador_id || ''}
                         onChange={handleChange}
                         className="w-full pl-10 p-3 pr-10 bg-white border border-border rounded-xl text-text focus:ring-primary focus:border-primary appearance-none transition-all duration-200 ease-in-out"
                         required
@@ -932,7 +933,7 @@ const ExpenseIncomeForm: React.FC = () => {
                           {isPeopleLoading ? 'Cargando colaboradores...' : (peopleError ? 'Error al cargar' : 'Selecciona un colaborador')}
                         </option>
                         {peopleList.map(p => (
-                          <option key={p.id} value={p.name}>{p.name}</option>
+                          <option key={p.id} value={p.id}>{p.name}</option>
                         ))}
                       </select>
                       <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-textSecondary pointer-events-none" size={20} />
@@ -1075,7 +1076,7 @@ const ExpenseIncomeForm: React.FC = () => {
                     {formData.category === 'fixed' && <p><strong className="text-textSecondary">Subcategoría:</strong> {getCategoryLabel(formData.subCategory, FIXED_EXPENSE_OPTIONS)}</p>}
                     {formData.category === 'viaticos' && <p><strong className="text-textSecondary">Subcategoría:</strong> {getCategoryLabel(formData.subCategory, VIATICOS_OPTIONS)}</p>}
                     <p className="sm:col-span-2"><strong className="text-textSecondary">Descripción:</strong> {formData.description}</p>
-                    <p><strong className="text-textSecondary">Colaborador:</strong> {formData.person}</p> {/* Muestra el nombre del colaborador */}
+                    <p><strong className="text-textSecondary">Colaborador:</strong> {peopleList.find(p => p.id === formData.colaborador_id)?.name || 'Desconocido'}</p>
                   </>
                 ) : ( // formData.type === 'income'
                   <>
@@ -1114,3 +1115,4 @@ const ExpenseIncomeForm: React.FC = () => {
 };
 
 export default ExpenseIncomeForm;
+
